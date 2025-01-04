@@ -1,6 +1,5 @@
 const canvas = document.getElementById("webgl-canvas");
 const gl = canvas.getContext("webgl2");
-document.title = "login";
 document.body.style = "margin:0;touch-action:none;overflow:hidden;";
 canvas.style.width = "100%";
 canvas.style.height = "auto";
