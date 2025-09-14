@@ -29,7 +29,7 @@
         
         <div class="main-content">
             <div class="left-column">
-                <div class="card">
+                <div class="card sales-info-card">
                     <h2 class="card-title"><i class="fas fa-chart-line"></i> 销售信息</h2>
                     
                     <div class="info-grid">
@@ -58,17 +58,10 @@
                         销售进度: <span id="progress-percent">0</span>%
                     </div>
                 </div>
-                
-                <div class="card">
-                    <h2 class="card-title"><i class="fas fa-history"></i> 最近交易</h2>
-                    <div id="transaction-list" style="min-height: 100px; display: flex; align-items: center; justify-content: center; color: var(--text-light);">
-                        暂无交易记录
-                    </div>
-                </div>
             </div>
             
             <div class="right-column">
-                <div class="card">
+                <div class="card exchange-card">
                     <h2 class="card-title"><i class="fas fa-exchange-alt"></i> 兑换代币</h2>
                     
                     <div class="form-group">
@@ -86,12 +79,27 @@
                     <div id="status-message" class="status"></div>
                 </div>
             </div>
+            
+            <!-- 最近交易部分 - 移动到主内容区域底部 -->
+            <div class="transaction-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-history"></i> 最近交易</h2>
+                    <div id="transaction-list" style="min-height: 100px; display: flex; align-items: center; justify-content: center; color: var(--text-light);">
+                        暂无交易记录
+                    </div>
+                </div>
+            </div>
         </div>
         
         <footer>
             <p>Meng Lei Coin (MLC) - 基于Polygon网络的ERC20代币</p>
             <div class="network-info">
                 <i class="fas fa-network-wired"></i> 网络: <span id="network-name">未连接</span>
+            </div>
+            <!-- 添加合约地址输入 -->
+            <div class="contract-address-input">
+                <input type="text" id="contract-address" placeholder="输入合约地址" value="YOUR_CONTRACT_ADDRESS">
+                <button id="set-contract-btn">设置合约</button>
             </div>
         </footer>
     </div>

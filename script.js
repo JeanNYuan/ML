@@ -1,7 +1,7 @@
 // WebGL背景代码
 const canvas = document.getElementById("webgl-canvas");
 const gl = canvas.getContext("webgl2");
-document.body.style = "margin:0;touch-action:none;overflow:hidden;";
+document.body.style = "margin:0;touch-action:none;overflow:auto;"; // 修改为overflow:auto允许滚动
 canvas.style.width = "100%";
 canvas.style.height = "auto";
 canvas.style.userSelect = "none";
@@ -199,6 +199,8 @@ const tokensRemaining = document.getElementById('tokens-remaining');
 const saleProgress = document.getElementById('sale-progress');
 const progressPercent = document.getElementById('progress-percent');
 const networkName = document.getElementById('network-name');
+const contractAddressInput = document.getElementById('contract-address');
+const setContractBtn = document.getElementById('set-contract-btn');
 
 // 初始化
 async function init() {
@@ -210,6 +212,7 @@ async function init() {
         connectWalletBtn.addEventListener('click', connectWallet);
         polAmountInput.addEventListener('input', updateMlcAmount);
         exchangeBtn.addEventListener('click', exchangeTokens);
+        setContractBtn.addEventListener('click', setContractAddress);
         
         // 监听账户变化
         window.ethereum.on('accountsChanged', handleAccountsChanged);
@@ -223,6 +226,18 @@ async function init() {
     } else {
         showStatus("未检测到Web3钱包（如MetaMask），请安装钱包后刷新页面", "error");
         connectWalletBtn.disabled = true;
+    }
+}
+
+// 设置合约地址
+function setContractAddress() {
+    const newAddress = contractAddressInput.value.trim();
+    if (newAddress) {
+        contractAddress = newAddress;
+        showStatus("合约地址已更新", "success");
+        loadContract();
+    } else {
+        showStatus("请输入有效的合约地址", "error");
     }
 }
 
@@ -265,18 +280,25 @@ async function checkNetwork() {
 // 加载合约
 async function loadContract() {
     if (provider) {
-        signer = provider.getSigner();
-        contract = new ethers.Contract(contractAddress, contractABI, signer);
-        
-        // 监听合约事件
-        contract.on("TokensPurchased", (buyer, polAmount, mlcAmount, event) => {
-            if (userAddress && buyer.toLowerCase() === userAddress.toLowerCase()) {
-                showStatus(`兑换成功! 获得 ${ethers.utils.formatUnits(mlcAmount, 1)} MLC`, "success");
-                updateBalances();
-                updateSaleInfo();
-            }
-            addTransactionToList(buyer, polAmount, mlcAmount);
-        });
+        try {
+            signer = provider.getSigner();
+            contract = new ethers.Contract(contractAddress, contractABI, signer);
+            
+            // 监听合约事件
+            contract.on("TokensPurchased", (buyer, polAmount, mlcAmount, event) => {
+                if (userAddress && buyer.toLowerCase() === userAddress.toLowerCase()) {
+                    showStatus(`兑换成功! 获得 ${ethers.utils.formatUnits(mlcAmount, 1)} MLC`, "success");
+                    updateBalances();
+                    updateSaleInfo();
+                }
+                addTransactionToList(buyer, polAmount, mlcAmount);
+            });
+            
+            showStatus("合约加载成功", "success");
+        } catch (error) {
+            console.error("加载合约失败:", error);
+            showStatus("加载合约失败，请检查合约地址", "error");
+        }
     }
 }
 
@@ -364,7 +386,7 @@ async function updateSaleInfo() {
         
         // 更新进度条
         const totalSale = Number(ethers.utils.formatUnits(remaining, 1)) + Number(ethers.utils.formatUnits(sold, 1));
-        const progress = (Number(ethers.utils.formatUnits(sold, 1)) / totalSale) * 100;
+        const progress = totalSale > 0 ? (Number(ethers.utils.formatUnits(sold, 1)) / totalSale) * 100 : 0;
         saleProgress.style.width = `${progress}%`;
         progressPercent.textContent = progress.toFixed(1);
         
