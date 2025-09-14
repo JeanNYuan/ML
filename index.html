@@ -1,21 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>TOPS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meng Lei Coin 兑换平台</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-
     <!-- WebGL Background -->
     <canvas id="webgl-canvas"></canvas>
-
-    <!-- Overlay and Form Container -->
     <div class="overlay"></div>
 
+    <!-- Content Container -->
+    <div class="container">
+        <header>
+            <h1>Meng Lei Coin <i class="fas fa-coins"></i></h1>
+            <p class="subtitle">使用POL兑换MLC代币 - 1 POL = 100 MLC</p>
+        </header>
+        
+        <div class="wallet-section">
+            <div class="wallet-info">
+                <div class="wallet-address" id="wallet-address">未连接钱包</div>
+                <div class="wallet-balance">POL余额: <span id="pol-balance">0</span> | MLC余额: <span id="mlc-balance">0</span></div>
+            </div>
+            <button id="connect-wallet" class="btn"><i class="fas fa-wallet"></i> 连接钱包</button>
+        </div>
+        
+        <div class="main-content">
+            <div class="left-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-chart-line"></i> 销售信息</h2>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">销售状态</div>
+                            <div class="info-value">活跃 <span class="sale-status status-active" id="sale-status">进行中</span></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">已售出</div>
+                            <div class="info-value" id="tokens-sold">0 MLC</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">剩余量</div>
+                            <div class="info-value" id="tokens-remaining">0 MLC</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">兑换比例</div>
+                            <div class="info-value">1 POL = 100 MLC</div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress" id="sale-progress" style="width: 0%"></div>
+                    </div>
+                    <div style="text-align: center; font-size: 0.9rem; color: var(--text-light);">
+                        销售进度: <span id="progress-percent">0</span>%
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-history"></i> 最近交易</h2>
+                    <div id="transaction-list" style="min-height: 100px; display: flex; align-items: center; justify-content: center; color: var(--text-light);">
+                        暂无交易记录
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-exchange-alt"></i> 兑换代币</h2>
+                    
+                    <div class="form-group">
+                        <label for="pol-amount">输入POL数量:</label>
+                        <input type="number" id="pol-amount" min="0" step="0.001" placeholder="0.0">
+                    </div>
+                    
+                    <div class="output">
+                        <div class="info-label">你将获得</div>
+                        <div class="output-value" id="mlc-amount">0 MLC</div>
+                    </div>
+                    
+                    <button id="exchange-btn" class="btn btn-secondary" disabled><i class="fas fa-sync-alt"></i> 立即兑换</button>
+                    
+                    <div id="status-message" class="status"></div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Meng Lei Coin (MLC) - 基于Polygon网络的ERC20代币</p>
+            <div class="network-info">
+                <i class="fas fa-network-wired"></i> 网络: <span id="network-name">未连接</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 引入以太坊相关库 -->
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js" type="application/javascript"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
